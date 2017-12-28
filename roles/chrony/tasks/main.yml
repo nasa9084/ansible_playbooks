@@ -1,0 +1,16 @@
+---
+- name: Install chrony
+  yum:
+    name: chrony
+    state: installed
+
+- name: Configure chrony
+  copy:
+    src: chrony.conf
+    dest: /etc/chrony.conf
+
+- name: Start and enable chrony
+  systemd:
+    name: chronyd
+    state: started
+    enabled: yes

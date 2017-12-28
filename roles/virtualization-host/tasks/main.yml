@@ -1,0 +1,14 @@
+---
+- name: Install virtualization packages
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - "@^Virtualization Host"
+    - virt-install
+
+- name: Start and enable libvirtd
+  systemd:
+    name: libvirtd
+    state: started
+    enabled: yes

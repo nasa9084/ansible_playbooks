@@ -1,0 +1,25 @@
+---
+- include_vars: vars/main.yml
+
+- include: setup-redhat.yml
+  when: "ansible_os_family == 'RedHat'"
+
+- include: setup-debian.yml
+  when: "ansible_os_family == 'Debian'"
+
+- name: install Ruby Runtime
+  shell: /usr/share/one/install_gems --yes
+
+- name: configure oneadmin password
+  template:
+    src: templates/one_auth.j2
+    dest: /var/lib/one/.one/one_auth
+
+- name: start OpenNebula daemons
+  systemd:
+    name: '{{ item }}'
+    enabled: yes
+    state: started
+  with_items:
+    - opennebula
+    - opennebula-sunstone

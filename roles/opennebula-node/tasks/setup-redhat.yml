@@ -1,0 +1,29 @@
+---
+- name: stop when the OS version is not 7
+  fail:
+    msg: "CentOS/RedHat version have to be 7."
+  when: "ansible_distribution_major_version != '7'"
+
+- name: add OpenNebula Repository
+  yum_repository:
+    name: opennebula
+    description: opennebula
+    baseurl: https://downloads.opennebula.org/repo/5.4/CentOS/7/x86_64
+    enabled: yes
+    gpgkey: https://downloads.opennebula.org/repo/repo.key
+    gpgcheck: yes
+
+- name: install OpenNebula Node
+  yum:
+    name: opennebula-node-kvm
+    state: present
+
+- name: restart libvirtd
+  systemd:
+    name: libvirtd
+    state: restarted
+
+- name: disable SELinux
+  selinux:
+    state: disabled
+  notify: reboot

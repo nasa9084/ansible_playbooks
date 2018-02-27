@@ -1,0 +1,33 @@
+---
+- include_vars: vars/main.yml
+
+- name: disable SELinux
+  selinux:
+    state: disabled
+  notify: reboot
+
+- name: add OpenNebula Repository
+  yum_repository:
+    name: opennebula
+    description: opennebula
+    baseurl: https://downloads.opennebula.org/repo/5.4/CentOS/7/x86_64
+    enabled: yes
+    gpgkey: https://downloads.opennebula.org/repo/repo.key
+    gpgcheck: yes
+    state: present
+
+- name: install EPEL Repository
+  yum:
+    name: epel-release
+    state: present
+
+- name: install OpenNebula Front-end
+  yum:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - opennebula-server
+    - opennebula-sunstone
+    - opennebula-ruby
+    - opennebula-gate
+    - opennebula-flow
